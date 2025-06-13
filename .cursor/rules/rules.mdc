@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: General rule describing the role of AI agent
+globs: 
+alwaysApply: auto
+---
+
+You are a software engineer implementing MCP server which connects to  OSO cloud service and is able to answer user his question about authorization. 

@@ -1,0 +1,114 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Rule describing OSO cloud clouds API endpoints
+globs: 
+alwaysApply: false
+---
+
+### Supported API endpoints and its documentation:
+
+#### Endpoint: GET /policy
+Description: Gets the currently active policy in Oso Cloud. The policy is expressed as a string containing Polar code.
+Example:
+curl https://api.osohq.com/api/policy
+
+#### Endpoint: POST /authorize
+Description: Determines whether or not an actor can take an action on a resource, based on a combination of authorization data and policy logic.
+Example: 
+curl https://api.osohq.com/api/authorize \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "actor_type": "",
+  "actor_id": "",
+  "action": "",
+  "resource_type": "",
+  "resource_id": "",
+  "context_facts": []
+}'
+
+#### Endpoint: POST /authorize_resources
+Description: Returns a subset of resources on which an actor can perform a particular action. Ordering and duplicates, if any exist, are preserved.
+Example: 
+curl https://api.osohq.com/api/authorize_resources \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "actor_type": "",
+  "actor_id": "",
+  "action": "",
+  "resources": [
+    {
+      "type": null,
+      "id": null
+    }
+  ],
+  "context_facts": []
+}'
+
+#### Endpoint: POST /list
+Description: Fetches a list of resource IDs on which an actor can perform a particular action.
+Example: 
+curl https://api.osohq.com/api/list \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "actor_type": "",
+  "actor_id": "",
+  "action": "",
+  "resource_type": "",
+  "context_facts": []
+}'
+
+#### Endpoint: POST /actions
+Description: Fetches a list of actions which an actor can perform on a particular resource.
+Example: 
+curl https://api.osohq.com/api/actions \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "actor_type": "",
+  "actor_id": "",
+  "resource_type": "",
+  "resource_id": "",
+  "context_facts": []
+}'
+
+#### Endpoint: POST /evaluate_query
+Description:
+Query v2: query for any expression.
+Unlike GET /facts, which only lists facts you've added to Oso Cloud, you can use POST /evaluate_query to list derived information about any rule in your policy.
+
+Example: 
+curl https://api.osohq.com/api/evaluate_query \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "predicate": [],
+  "calls": [
+    []
+  ],
+  "constraints": {
+    "ANY_ADDITIONAL_PROPERTY": {
+      "type": "",
+      "ids": [
+        ""
+      ]
+    }
+  },
+  "context_facts": [
+    {
+      "predicate": "",
+      "args": [
+        {
+          "type": "",
+          "id": ""
+        }
+      ]
+    }
+  ]
+}'
