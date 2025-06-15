@@ -15,7 +15,7 @@ export default function createStatelessServer({
 }) {
   const server = new McpServer({
     name: "OSO-Cloud-MCP",
-    version: "0.0.1",
+    version: "0.0.2",
   });
 
   const osoClient = new OsoClient({
@@ -46,10 +46,10 @@ export default function createStatelessServer({
       action: z.string().describe("The action to check"),
       resourceType: z.string().describe("The type of resource (e.g., 'Document', 'Project')"),
       resourceId: z.string().describe("The ID of the resource"),
-      contextFacts: z.array(z.any()).optional().describe("Additional context facts for authorization"),
+      // contextFacts: z.array(z.any()).optional().describe("Additional context facts for authorization"),
     },
-    async ({ actorType, actorId, action, resourceType, resourceId, contextFacts = [] }) => {
-      const result = await osoClient.authorize(actorType, actorId, action, resourceType, resourceId, contextFacts);
+    async ({ actorType, actorId, action, resourceType, resourceId }) => {
+      const result = await osoClient.authorize(actorType, actorId, action, resourceType, resourceId, []);
       return {
         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
       };
@@ -65,10 +65,16 @@ export default function createStatelessServer({
       actorId: z.string().describe("The ID of the actor"),
       action: z.string().describe("The action to check"),
       resourceType: z.string().describe("The type of resources to list"),
-      contextFacts: z.array(z.any()).optional().describe("Additional context facts for authorization"),
+      // contextFacts: z.array(z.any()).optional().describe("Additional context facts for authorization"),
     },
-    async ({ actorType, actorId, action, resourceType, contextFacts = [] }) => {
-      const result = await osoClient.list(actorType, actorId, action, resourceType, contextFacts);
+    async ({ actorType, actorId, action, resourceType }) => {
+      const result = await osoClient.list(
+        actorType,
+        actorId,
+        action,
+        resourceType,
+        []
+      );
       return {
         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
       };
@@ -84,10 +90,16 @@ export default function createStatelessServer({
       actorId: z.string().describe("The ID of the actor"),
       resourceType: z.string().describe("The type of resource (e.g., 'Document', 'Project')"),
       resourceId: z.string().describe("The ID of the resource"),
-      contextFacts: z.array(z.any()).optional().describe("Additional context facts for authorization"),
+      // contextFacts: z.array(z.any()).optional().describe("Additional context facts for authorization"),
     },
-    async ({ actorType, actorId, resourceType, resourceId, contextFacts = [] }) => {
-      const result = await osoClient.getActions(actorType, actorId, resourceType, resourceId, contextFacts);
+    async ({ actorType, actorId, resourceType, resourceId }) => {
+      const result = await osoClient.getActions(
+        actorType,
+        actorId,
+        resourceType,
+        resourceId,
+        []
+      );
       return {
         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
       };
@@ -95,53 +107,53 @@ export default function createStatelessServer({
   );
 
   // Authorize resources
-  server.tool(
-    "authorize_resources",
-    "Check which resources an actor can perform an action on",
-    {
-      actorType: z.string().describe("The type of actor (e.g., 'User', 'Organization')"),
-      actorId: z.string().describe("The ID of the actor"),
-      action: z.string().describe("The action to check"),
-      resources: z.array(z.object({
-        type: z.string().nullable().describe("The type of resource (e.g., 'Document', 'Project')"),
-        id: z.string().nullable().describe("The ID of the resource")
-      })).describe("List of resources to check"),
-      contextFacts: z.array(z.any()).optional().describe("Additional context facts for authorization"),
-    },
-    async ({ actorType, actorId, action, resources, contextFacts = [] }) => {
-      const result = await osoClient.authorizeResources(actorType, actorId, action, resources, contextFacts);
-      return {
-        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-      };
-    }
-  );
+  // server.tool(
+  //   "authorize_resources",
+  //   "Check which resources an actor can perform an action on",
+  //   {
+  //     actorType: z.string().describe("The type of actor (e.g., 'User', 'Organization')"),
+  //     actorId: z.string().describe("The ID of the actor"),
+  //     action: z.string().describe("The action to check"),
+  //     resources: z.array(z.object({
+  //       type: z.string().nullable().describe("The type of resource (e.g., 'Document', 'Project')"),
+  //       id: z.string().nullable().describe("The ID of the resource")
+  //     })).describe("List of resources to check"),
+  //     // contextFacts: z.array(z.any()).optional().describe("Additional context facts for authorization"),
+  //   },
+  //   async ({ actorType, actorId, action, resources }) => {
+  //     const result = await osoClient.authorizeResources(actorType, actorId, action, resources, []);
+  //     return {
+  //       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+  //     };
+  //   }
+  // );
 
   // Evaluate query
-  server.tool(
-    "evaluate_query",
-    "Evaluate a query against the Oso Cloud policy",
-    {
-      predicate: z.array(z.any()).describe("The predicate to evaluate"),
-      calls: z.array(z.array(z.any())).describe("The calls to evaluate"),
-      constraints: z.record(z.object({
-        type: z.string(),
-        ids: z.array(z.string())
-      })).describe("Constraints for the query"),
-      contextFacts: z.array(z.object({
-        predicate: z.string(),
-        args: z.array(z.object({
-          type: z.string(),
-          id: z.string()
-        }))
-      })).describe("Context facts for the query"),
-    },
-    async ({ predicate, calls, constraints, contextFacts }) => {
-      const result = await osoClient.evaluateQuery(predicate, calls, constraints, contextFacts);
-      return {
-        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-      };
-    }
-  );
+  // server.tool(
+  //   "evaluate_query",
+  //   "Evaluate a query against the Oso Cloud policy",
+  //   {
+  //     predicate: z.array(z.any()).describe("The predicate to evaluate"),
+  //     calls: z.array(z.array(z.any())).describe("The calls to evaluate"),
+  //     constraints: z.record(z.object({
+  //       type: z.string(),
+  //       ids: z.array(z.string())
+  //     })).describe("Constraints for the query"),
+  //     contextFacts: z.array(z.object({
+  //       predicate: z.string(),
+  //       args: z.array(z.object({
+  //         type: z.string(),
+  //         id: z.string()
+  //       }))
+  //     })).describe("Context facts for the query"),
+  //   },
+  //   async ({ predicate, calls, constraints, contextFacts }) => {
+  //     const result = await osoClient.evaluateQuery(predicate, calls, constraints, contextFacts);
+  //     return {
+  //       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+  //     };
+  //   }
+  // );
 
   return server.server;
 }
