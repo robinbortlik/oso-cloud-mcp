@@ -1,5 +1,7 @@
 # OSO Cloud MCP
 
+[![smithery badge](https://smithery.ai/badge/@robinbortlik/oso-cloud-mcp)](https://smithery.ai/server/@robinbortlik/oso-cloud-mcp)
+
 A Model Context Protocol (MCP) server that integrates with OSO Cloud to provide authorization capabilities. This server acts as a bridge between your application and OSO Cloud's authorization service, allowing you to perform various authorization checks and queries through a standardized interface.
 
 
